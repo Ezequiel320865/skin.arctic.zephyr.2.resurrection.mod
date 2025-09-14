@@ -109,10 +109,14 @@
                         <top>0</top>
                         <width>80</width>
                         <height>80</height>
-                        <texturefocus colordiffuse="white" border="2">buttons/play_pause_focus.png</texturefocus>
-                        <texturenofocus colordiffuse="main_fg_70">buttons/play_pause.png</texturenofocus>
+                        <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                        <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                         <onclick>PlayerControl(PlayPause)</onclick>
                         <visible>!Skin.HasSetting(HidePlayPauseButton)</visible>
+                        <label>$INFO[Player.PlaySpeed,⏸,⏵]</label>
+                        <font>font20_title</font>
+                        <textcolor>black</textcolor>
+                        <aligny>center</aligny>
                         <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
                         <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
                     </control>
@@ -150,8 +154,8 @@
                         <info>Player.Progress</info>
                         <action>seek</action>
                         <texturesliderbar />
-                        <textureslidernib colordiffuse="white">buttons/slider_nib.png</textureslidernib>
-                        <textureslidernibfocus colordiffuse="FFFF0000">buttons/slider_nib_focus.png</textureslidernibfocus>
+                        <textureslidernib colordiffuse="white">common/white.png</textureslidernib>
+                        <textureslidernibfocus colordiffuse="FFFF0000">common/white.png</textureslidernibfocus>
                         <animation effect="fade" start="0" end="100" time="200">Focus</animation>
                         <animation effect="fade" start="100" end="0" time="200">UnFocus</animation>
                     </control>
@@ -191,10 +195,14 @@
                         <control type="button" id="15">
                             <width>60</width>
                             <height>60</height>
-                            <texturefocus colordiffuse="white">buttons/stop_focus.png</texturefocus>
-                            <texturenofocus colordiffuse="main_fg_70">buttons/stop.png</texturenofocus>
+                            <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                            <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                             <onclick>PlayerControl(Stop)</onclick>
                             <visible>!Skin.HasSetting(HideStopButton)</visible>
+                            <label>⏹</label>
+                            <font>font16</font>
+                            <textcolor>black</textcolor>
+                            <aligny>center</aligny>
                             <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
                             <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
                         </control>
@@ -203,9 +211,13 @@
                         <control type="button" id="16">
                             <width>60</width>
                             <height>60</height>
-                            <texturefocus colordiffuse="white">buttons/rewind_focus.png</texturefocus>
-                            <texturenofocus colordiffuse="main_fg_70">buttons/rewind.png</texturenofocus>
+                            <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                            <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                             <onclick>PlayerControl(Rewind)</onclick>
+                            <label>⏪</label>
+                            <font>font16</font>
+                            <textcolor>black</textcolor>
+                            <aligny>center</aligny>
                             <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
                             <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
                         </control>
@@ -214,9 +226,13 @@
                         <control type="button" id="17">
                             <width>60</width>
                             <height>60</height>
-                            <texturefocus colordiffuse="white">buttons/fastforward_focus.png</texturefocus>
-                            <texturenofocus colordiffuse="main_fg_70">buttons/fastforward.png</texturenofocus>
+                            <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                            <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                             <onclick>PlayerControl(Forward)</onclick>
+                            <label>⏩</label>
+                            <font>font16</font>
+                            <textcolor>black</textcolor>
+                            <aligny>center</aligny>
                             <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
                             <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
                         </control>
@@ -236,10 +252,14 @@
                         <control type="button" id="18">
                             <width>60</width>
                             <height>60</height>
-                            <texturefocus colordiffuse="white">buttons/subtitles_focus.png</texturefocus>
-                            <texturenofocus colordiffuse="main_fg_70">buttons/subtitles.png</texturenofocus>
+                            <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                            <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                             <onclick>ActivateWindow(DialogSubtitles)</onclick>
                             <visible>VideoPlayer.HasSubtitles</visible>
+                            <label>CC</label>
+                            <font>font12_title</font>
+                            <textcolor>black</textcolor>
+                            <aligny>center</aligny>
                             <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
                             <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
                         </control>
@@ -248,10 +268,14 @@
                         <control type="button" id="19">
                             <width>60</width>
                             <height>60</height>
-                            <texturefocus colordiffuse="white">buttons/audio_focus.png</texturefocus>
-                            <texturenofocus colordiffuse="main_fg_70">buttons/audio.png</texturenofocus>
+                            <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                            <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                             <onclick>ActivateWindow(DialogAudioDSPManager)</onclick>
                             <visible>VideoPlayer.HasAudioStreams</visible>
+                            <label>🔊</label>
+                            <font>font16</font>
+                            <textcolor>black</textcolor>
+                            <aligny>center</aligny>
                             <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
                             <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
                         </control>
@@ -260,9 +284,13 @@
                         <control type="button" id="20">
                             <width>60</width>
                             <height>60</height>
-                            <texturefocus colordiffuse="white">buttons/info_focus.png</texturefocus>
-                            <texturenofocus colordiffuse="main_fg_70">buttons/info.png</texturenofocus>
+                            <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                            <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                             <onclick>ActivateWindow(DialogVideoInfo)</onclick>
+                            <label>ℹ</label>
+                            <font>font16</font>
+                            <textcolor>black</textcolor>
+                            <aligny>center</aligny>
                             <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
                             <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
                         </control>
@@ -271,9 +299,13 @@
                         <control type="button" id="21">
                             <width>60</width>
                             <height>60</height>
-                            <texturefocus colordiffuse="white">buttons/volume_focus.png</texturefocus>
-                            <texturenofocus colordiffuse="main_fg_70">buttons/volume.png</texturenofocus>
+                            <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                            <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                             <onclick>ActivateWindow(DialogVolumeBar)</onclick>
+                            <label>🔉</label>
+                            <font>font16</font>
+                            <textcolor>black</textcolor>
+                            <aligny>center</aligny>
                             <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
                             <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
                         </control>
@@ -304,9 +336,13 @@
                         <top>5</top>
                         <width>30</width>
                         <height>30</height>
-                        <texturefocus colordiffuse="white">buttons/chapter_prev_focus.png</texturefocus>
-                        <texturenofocus colordiffuse="main_fg_70">buttons/chapter_prev.png</texturenofocus>
+                        <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                        <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                         <onclick>PlayerControl(ChapterOrBigStepBack)</onclick>
+                        <label>◀</label>
+                        <font>font12</font>
+                        <textcolor>black</textcolor>
+                        <aligny>center</aligny>
                     </control>
                     
                     <control type="button" id="23">
@@ -314,9 +350,13 @@
                         <top>5</top>
                         <width>30</width>
                         <height>30</height>
-                        <texturefocus colordiffuse="white">buttons/chapter_next_focus.png</texturefocus>
-                        <texturenofocus colordiffuse="main_fg_70">buttons/chapter_next.png</texturenofocus>
+                        <texturefocus colordiffuse="FFFFFFFF">common/white.png</texturefocus>
+                        <texturenofocus colordiffuse="80FFFFFF">common/white.png</texturenofocus>
                         <onclick>PlayerControl(ChapterOrBigStepForward)</onclick>
+                        <label>▶</label>
+                        <font>font12</font>
+                        <textcolor>black</textcolor>
+                        <aligny>center</aligny>
                     </control>
                 </control>
                 
@@ -324,34 +364,4 @@
                 <onup condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">SetProperty(OSDInfo,1,Home)</onup>
                 <onup condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar)">ClearProperty(OSDInfo,Home)</onup>
                 <onup condition="!VideoPlayer.Content(LiveTV) + Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">6501</onup>
-                <ondown condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo))">$VAR[Action_OSD_Main_OnDown]</ondown>
-                <ondown condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo))">ClearProperty(OSDInfo,Home)</ondown>
-                <onup condition="VideoPlayer.Content(LiveTV)">Close</onup>
-                <onup condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</onup>
-                <ondown condition="VideoPlayer.Content(LiveTV)">Close</ondown>
-                <ondown condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</ondown>
-            </control>
-
-            <!-- Subtitles Stream Selector -->
-            <include content="OSD_Stream_Selector" condition="!Skin.HasSetting(OSD.DisablePopUpDialogs)">
-                <param name="id">6207</param>
-                <param name="buttonid">18</param>
-                <param name="stream_type">subtitle</param>
-                <param name="header">$LOCALIZE[287]</param>
-                <param name="nibpos">180</param>
-                <param name="width">640</param>
-                <param name="method">set_player_subtitle</param>
-                <param name="enabled">VideoPlayer.SubtitlesEnabled</param>
-                <param name="toggle">true</param>
-                <param name="icon">special://skin/extras/icons/quote.png</param>
-            </include>
-
-            <!-- Audio Stream Selector -->
-            <include content="OSD_Stream_Selector" condition="!Skin.HasSetting(OSD.DisablePopUpDialogs)">
-                <param name="id">6206</param>
-                <param name="buttonid">10018</param>
-                <param name="stream_type">audio</param>
-                <param name="header">$LOCALIZE[460]</param>
-                <param name="nibpos">240</param>
-                <param name="width">640</param>
-                <param name="method">set_player_audio</para
+                <ondown condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Ho
