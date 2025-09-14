@@ -35,10 +35,13 @@
                 <animation effect="fade" start="100" end="0" time="200" condition="Control.HasFocus(9605)">Conditional</animation>
                     
                 <control type="grouplist" id="9000">
+                    <left>50</left>  <!-- Mover controles a la izquierda -->
+                    <align>left</align>  <!-- Alinear a la izquierda -->
+                    <itemgap>20</itemgap>  <!-- Reducir espacio entre botones -->
+                    
                     <include condition="!VideoPlayer.Content(musicvideos) + !VideoPlayer.Content(LiveTV)">OSD_VideoPosition</include>
                     <include condition="VideoPlayer.Content(musicvideos) + !VideoPlayer.Content(LiveTV)">OSD_MusicPosition</include>
                     <include condition="VideoPlayer.Content(LiveTV)">OSD_LiveTVPosition</include>
-                    <itemgap>32</itemgap>
 
                     <onup condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">SetProperty(OSDInfo,1,Home)</onup>
                     <onup condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar)">ClearProperty(OSDInfo,Home)</onup>
@@ -85,6 +88,7 @@
                 <param name="icon">special://skin/extras/icons/volume.png</param>
             </include>
 
+            <!-- Reposicionar diálogos emergentes a la izquierda -->
             <control type="group">
                 <include content="Dialog_Background_Standard">
                     <param name="diffuse">diffuse/dialog_w480_h400.png</param>
@@ -168,7 +172,7 @@
                             <param name="control">button</param>
                             <param name="icon" />
                             <onup>6805</onup>
-                            <ondown>41</ondown>
+                            <ondown>41</onondown>
                             <height>160</height>
                             <onleft condition="Player.Paused">PlayerControl(Play)</onleft>
                             <onright condition="Player.Paused">PlayerControl(Play)</onright>
@@ -208,14 +212,15 @@
                 <include>Topbar</include>
             </control>
 
+            <!-- Mover barra de progreso a la izquierda -->
             <control type="progress">
-                <centerleft>50%</centerleft>
-                <width>1840</width>
-                <height>112</height>
-                <bottom>50</bottom>
+                <left>50</left>
+                <width>1740</width>
+                <height>8</height>
+                <bottom>100</bottom>
                 <info>Player.Progress</info>
-                <texturebg colordiffuse="00ffffff">slider/slider_bg2.png</texturebg>
-                <righttexture colordiffuse="panel_fg_100">slider/slider_nib2.png</righttexture>
+                <texturebg colordiffuse="main_fg_30">common/white.png</texturebg>
+                <righttexture colordiffuse="Highlight">common/white.png</righttexture>
                 <lefttexture />
                 <midtexture />
                 <visible>!PVR.IsPlayingTV</visible>
@@ -223,10 +228,10 @@
             </control>
 
             <control type="slider" id="6502">
-                <width>1760</width>
+                <left>50</left>
+                <width>1740</width>
                 <height>32</height>
                 <bottom>100</bottom>
-                <left>view_pad</left>
                 <info>Player.Progress</info>
                 <action>seek</action>
                 <texturesliderbar />
