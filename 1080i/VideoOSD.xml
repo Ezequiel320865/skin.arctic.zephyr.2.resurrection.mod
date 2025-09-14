@@ -26,6 +26,21 @@
             <onclick>Action(close)</onclick>
         </control>
 
+        <!-- Barra de progreso reposicionada a la izquierda -->
+        <control type="progress">
+            <left>50</left>
+            <width>1740</width>
+            <height>8</height>
+            <bottom>150</bottom>
+            <info>Player.Progress</info>
+            <texturebg colordiffuse="main_fg_30">common/white.png</texturebg>
+            <righttexture colordiffuse="Highlight">common/white.png</righttexture>
+            <lefttexture />
+            <midtexture />
+            <visible>!PVR.IsPlayingTV</visible>
+            <visible>Control.HasFocus(6501) | Control.HasFocus(6502)</visible>
+        </control>
+
         <control type="group">
             <visible>!Window.IsVisible(DialogPlayerProcessInfo.xml)</visible>
             <visible>!Window.IsVisible(1142) + !Window.IsVisible(1143)</visible>
@@ -34,33 +49,44 @@
                 <visible>!Window.IsVisible(VideoOSDBookmarks.xml)</visible>
                 <animation effect="fade" start="100" end="0" time="200" condition="Control.HasFocus(9605)">Conditional</animation>
                     
-                <control type="grouplist" id="9000">
-                    <left>50</left>  <!-- Mover controles a la izquierda -->
-                    <align>left</align>  <!-- Alinear a la izquierda -->
-                    <itemgap>20</itemgap>  <!-- Reducir espacio entre botones -->
+                <!-- Grupo de controles principales a la izquierda -->
+                <control type="group">
+                    <description>Contenedor principal de controles</description>
+                    <left>50</left>
+                    <bottom>100</bottom>
+                    <width>800</width>
+                    <height>100</height>
                     
-                    <include condition="!VideoPlayer.Content(musicvideos) + !VideoPlayer.Content(LiveTV)">OSD_VideoPosition</include>
-                    <include condition="VideoPlayer.Content(musicvideos) + !VideoPlayer.Content(LiveTV)">OSD_MusicPosition</include>
-                    <include condition="VideoPlayer.Content(LiveTV)">OSD_LiveTVPosition</include>
+                    <control type="grouplist" id="9000">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>800</width>
+                        <height>100</height>
+                        
+                        <include condition="!VideoPlayer.Content(musicvideos) + !VideoPlayer.Content(LiveTV)">OSD_VideoPosition</include>
+                        <include condition="VideoPlayer.Content(musicvideos) + !VideoPlayer.Content(LiveTV)">OSD_MusicPosition</include>
+                        <include condition="VideoPlayer.Content(LiveTV)">OSD_LiveTVPosition</include>
+                        <itemgap>20</itemgap>
 
-                    <onup condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">SetProperty(OSDInfo,1,Home)</onup>
-                    <onup condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar)">ClearProperty(OSDInfo,Home)</onup>
-                    <onup condition="!VideoPlayer.Content(LiveTV) + Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">6501</onup>
-                    <onup condition="!VideoPlayer.Content(LiveTV) + !Skin.HasSetting(OSD.DisablePopUpDialogs) + Control.HasFocus(18)">SetFocus(6207)</onup>
-                    <onup condition="!VideoPlayer.Content(LiveTV) + !Skin.HasSetting(OSD.DisablePopUpDialogs) + Control.HasFocus(10018)">SetFocus(6206)</onup>
-                    <onup condition="!VideoPlayer.Content(LiveTV) + !Skin.HasSetting(OSD.DisablePopUpDialogs) + Control.HasFocus(41)">SetFocus(7800)</onup>
-                    <ondown condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo))">$VAR[Action_OSD_Main_OnDown]</ondown>
-                    <ondown condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo))">ClearProperty(OSDInfo,Home)</ondown>
+                        <onup condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">SetProperty(OSDInfo,1,Home)</onup>
+                        <onup condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar)">ClearProperty(OSDInfo,Home)</onup>
+                        <onup condition="!VideoPlayer.Content(LiveTV) + Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">6501</onup>
+                        <onup condition="!VideoPlayer.Content(LiveTV) + !Skin.HasSetting(OSD.DisablePopUpDialogs) + Control.HasFocus(18)">SetFocus(6207)</onup>
+                        <onup condition="!VideoPlayer.Content(LiveTV) + !Skin.HasSetting(OSD.DisablePopUpDialogs) + Control.HasFocus(10018)">SetFocus(6206)</onup>
+                        <onup condition="!VideoPlayer.Content(LiveTV) + !Skin.HasSetting(OSD.DisablePopUpDialogs) + Control.HasFocus(41)">SetFocus(7800)</onup>
+                        <ondown condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo))">$VAR[Action_OSD_Main_OnDown]</ondown>
+                        <ondown condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo))">ClearProperty(OSDInfo,Home)</ondown>
 
-                    <onup condition="VideoPlayer.Content(LiveTV)">Close</onup>
-                    <onup condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</onup>
-                    <ondown condition="VideoPlayer.Content(LiveTV)">Close</ondown>
-                    <ondown condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</ondown>
+                        <onup condition="VideoPlayer.Content(LiveTV)">Close</onup>
+                        <onup condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</onup>
+                        <ondown condition="VideoPlayer.Content(LiveTV)">Close</ondown>
+                        <ondown condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</ondown>
 
-                    <orientation>horizontal</orientation>
-                    <usecontrolcoords>true</usecontrolcoords>
-                    <include condition="!VideoPlayer.Content(LiveTV)">OSD_Controls</include>
-                    <include condition="VideoPlayer.Content(LiveTV)">OSD_Controls_LiveTV</include>
+                        <orientation>horizontal</orientation>
+                        <usecontrolcoords>false</usecontrolcoords>
+                        <include condition="!VideoPlayer.Content(LiveTV)">OSD_Controls</include>
+                        <include condition="VideoPlayer.Content(LiveTV)">OSD_Controls_LiveTV</include>
+                    </control>
                 </control>
             </control>
 
@@ -88,7 +114,6 @@
                 <param name="icon">special://skin/extras/icons/volume.png</param>
             </include>
 
-            <!-- Reposicionar diálogos emergentes a la izquierda -->
             <control type="group">
                 <include content="Dialog_Background_Standard">
                     <param name="diffuse">diffuse/dialog_w480_h400.png</param>
@@ -172,7 +197,7 @@
                             <param name="control">button</param>
                             <param name="icon" />
                             <onup>6805</onup>
-                            <ondown>41</onondown>
+                            <ondown>41</ondown>
                             <height>160</height>
                             <onleft condition="Player.Paused">PlayerControl(Play)</onleft>
                             <onright condition="Player.Paused">PlayerControl(Play)</onright>
@@ -210,21 +235,6 @@
                 <visible>Window.IsVisible(DialogVideoInfo.xml)</visible>
                 <include>Global_Background</include>
                 <include>Topbar</include>
-            </control>
-
-            <!-- Mover barra de progreso a la izquierda -->
-            <control type="progress">
-                <left>50</left>
-                <width>1740</width>
-                <height>8</height>
-                <bottom>100</bottom>
-                <info>Player.Progress</info>
-                <texturebg colordiffuse="main_fg_30">common/white.png</texturebg>
-                <righttexture colordiffuse="Highlight">common/white.png</righttexture>
-                <lefttexture />
-                <midtexture />
-                <visible>!PVR.IsPlayingTV</visible>
-                <visible>Control.HasFocus(6501) | Control.HasFocus(6502)</visible>
             </control>
 
             <control type="slider" id="6502">
