@@ -1,23 +1,357 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- BINGIE -->
-<window>
-    <zorder>2</zorder>
-    <onload>SetFocus(200)</onload>
-	<onload condition="!VideoPlayer.Content(livetv) + ![Skin.String(defaultosdbutton_video,203) + !Player.PauseEnabled] + ![[Skin.String(defaultosdbutton_video,202) | Skin.String(defaultosdbutton_video,203)] + !Player.SeekEnabled]">SetFocus($INFO[Skin.String(defaultosdbutton_video)])</onload>
-    <onload condition="VideoPlayer.Content(livetv) + ![Skin.String(defaultosdbutton_livetv,203) + !Player.PauseEnabled] + ![[Skin.String(defaultosdbutton_livetv,202) | Skin.String(defaultosdbutton_livetv,203)] + !Player.SeekEnabled]">SetFocus($INFO[Skin.String(defaultosdbutton_livetv)])</onload>
-    <onload condition="Skin.HasSetting(UseBingieOSD) + !VideoPlayer.Content(livetv) + !Player.PauseEnabled">SetFocus(300)</onload>
-    <onload condition="!Player.Paused + !VideoPlayer.Content(livetv) + Skin.HasSetting(EnableAutoPauseOnOSD) + !Skin.HasSetting(EnableOSDInfo)">Pause</onload>
-    <onload condition="Skin.HasSetting(OSDShowInfoOnPause) + !Skin.HasSetting(EnableOSDInfo)">Skin.ToggleSetting(EnableOSDInfo)</onload>
-	<onload>ClearProperty(DialogMPAATopBar,home)</onload>
-	<onload>ClearProperty(DisableOSDCast,Home)</onload>
-	<onload>CancelAlarm(OpenMPAATopBar,silent)</onload>
-	<onunload>AlarmClock(OpenMPAATopBar,SetProperty(DialogMPAATopBar,1,home),00:00,silent)</onunload>
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Netflix-style Video OSD for Kodi -->
+<window id="2901">
+    <onload condition="!Player.PauseEnabled">SetFocus(15)</onload>
+    <onload condition="Player.PauseEnabled + !Skin.HasSetting(HidePlayPauseButton)">SetFocus(14)</onload>
+    <onload condition="Player.PauseEnabled + [Skin.HasSetting(HidePlayPauseButton) + !Skin.HasSetting(HideStopButton)]">SetFocus(15)</onload>
+    <onload condition="Player.PauseEnabled + [Skin.HasSetting(HidePlayPauseButton) + Skin.HasSetting(HideStopButton)]">SetFocus(18)</onload>
+    <onunload>ClearProperty(OSDInfo,Home)</onunload>
+    <onunload>CancelAlarm(osd_timeout,true)</onunload>
     <controls>
-		
-        <!--OSD Panel-->
+
+        <!-- Hidden focus control -->
+        <control type="button" id="99220">
+            <include>Defs_Hidden_Button</include>
+            <onfocus>SetFocus(15)</onfocus>
+            <onfocus condition="Window.IsVisible(videoosd)">Action(Close)</onfocus>
+        </control>
+
+        <!-- Background close area (top portion) -->
+        <control type="button">
+            <description>background close area</description>
+            <left>0</left>
+            <top>0</top>
+            <width>100%</width>
+            <height>60%</height>
+            <texturefocus />
+            <texturenofocus />
+            <onclick>Action(close)</onclick>
+        </control>
+
+        <!-- Main OSD Container -->
         <control type="group">
-            <include>OSDButtonsModern</include>
-            <include>HideOsdConditions</include>
-		</control>
-    </controls>
-</window>
+            <visible>!Window.IsVisible(DialogPlayerProcessInfo.xml)</visible>
+            <visible>!Window.IsVisible(1142) + !Window.IsVisible(1143)</visible>
+            
+            <!-- Netflix-style gradient background -->
+            <control type="image">
+                <left>0</left>
+                <bottom>0</bottom>
+                <width>100%</width>
+                <height>400</height>
+                <texture colordiffuse="FF000000">common/gradient_vertical.png</texture>
+                <animation effect="fade" start="0" end="80" time="300">WindowOpen</animation>
+                <animation effect="fade" start="80" end="0" time="200">WindowClose</animation>
+            </control>
+
+            <control type="group">
+                <visible>!Window.IsVisible(DialogSlider.xml)</visible>
+                <visible>!Window.IsVisible(VideoOSDBookmarks.xml)</visible>
+                <animation effect="fade" start="100" end="0" time="200" condition="Control.HasFocus(9605)">Conditional</animation>
+                
+                <!-- Top info bar (title, chapter info, etc.) -->
+                <control type="group">
+                    <left>80</left>
+                    <bottom>280</bottom>
+                    <width>1760</width>
+                    <height>60</height>
+                    
+                    <!-- Video title -->
+                    <control type="label">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>800</width>
+                        <height>30</height>
+                        <font>font16_title</font>
+                        <textcolor>white</textcolor>
+                        <label>$INFO[VideoPlayer.Title]</label>
+                        <aligny>center</aligny>
+                        <scroll>true</scroll>
+                    </control>
+                    
+                    <!-- Episode/Season info -->
+                    <control type="label">
+                        <left>0</left>
+                        <top>32</top>
+                        <width>800</width>
+                        <height>28</height>
+                        <font>font12</font>
+                        <textcolor>main_fg_70</textcolor>
+                        <label>$INFO[VideoPlayer.Season,S,]$INFO[VideoPlayer.Episode,E, • ]$INFO[VideoPlayer.Year]</label>
+                        <aligny>center</aligny>
+                        <visible>VideoPlayer.Content(episodes)</visible>
+                    </control>
+                    
+                    <!-- Duration info (right side) -->
+                    <control type="label">
+                        <right>0</right>
+                        <top>0</top>
+                        <width>300</width>
+                        <height>60</height>
+                        <font>font13</font>
+                        <textcolor>main_fg_70</textcolor>
+                        <label>$INFO[Player.Time] / $INFO[Player.Duration]</label>
+                        <aligny>center</aligny>
+                        <align>right</align>
+                    </control>
+                </control>
+
+                <!-- Main playback controls bar (Netflix style) -->
+                <control type="group">
+                    <left>80</left>
+                    <bottom>200</bottom>
+                    <width>1760</width>
+                    <height>80</height>
+                    
+                    <!-- Play/Pause button (left side) -->
+                    <control type="button" id="14">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>80</width>
+                        <height>80</height>
+                        <texturefocus colordiffuse="white" border="2">buttons/play_pause_focus.png</texturefocus>
+                        <texturenofocus colordiffuse="main_fg_70">buttons/play_pause.png</texturenofocus>
+                        <onclick>PlayerControl(PlayPause)</onclick>
+                        <visible>!Skin.HasSetting(HidePlayPauseButton)</visible>
+                        <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
+                        <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
+                    </control>
+                    
+                    <!-- Progress bar background -->
+                    <control type="image">
+                        <left>100</left>
+                        <top>35</top>
+                        <width>1560</width>
+                        <height>10</height>
+                        <texture colordiffuse="40FFFFFF">common/white.png</texture>
+                        <bordertexture border="2" colordiffuse="20FFFFFF">common/border.png</bordertexture>
+                    </control>
+                    
+                    <!-- Progress bar (watched portion) -->
+                    <control type="progress">
+                        <left>100</left>
+                        <top>35</top>
+                        <width>1560</width>
+                        <height>10</height>
+                        <info>Player.Progress</info>
+                        <texturebg />
+                        <righttexture colordiffuse="FFFF0000">common/white.png</righttexture>
+                        <lefttexture />
+                        <midtexture />
+                        <visible>!PVR.IsPlayingTV</visible>
+                    </control>
+                    
+                    <!-- Seekbar slider (invisible but functional) -->
+                    <control type="slider" id="6502">
+                        <left>100</left>
+                        <top>25</top>
+                        <width>1560</width>
+                        <height>30</height>
+                        <info>Player.Progress</info>
+                        <action>seek</action>
+                        <texturesliderbar />
+                        <textureslidernib colordiffuse="white">buttons/slider_nib.png</textureslidernib>
+                        <textureslidernibfocus colordiffuse="FFFF0000">buttons/slider_nib_focus.png</textureslidernibfocus>
+                        <animation effect="fade" start="0" end="100" time="200">Focus</animation>
+                        <animation effect="fade" start="100" end="0" time="200">UnFocus</animation>
+                    </control>
+                    
+                    <!-- Time remaining -->
+                    <control type="label">
+                        <right>0</right>
+                        <top>50</top>
+                        <width>100</width>
+                        <height>30</height>
+                        <font>font10</font>
+                        <textcolor>main_fg_70</textcolor>
+                        <label>-$INFO[Player.TimeRemaining]</label>
+                        <aligny>center</aligny>
+                        <align>right</align>
+                    </control>
+                </control>
+
+                <!-- Secondary controls (bottom row) -->
+                <control type="group">
+                    <left>80</left>
+                    <bottom>100</bottom>
+                    <width>1760</width>
+                    <height>80</height>
+                    
+                    <!-- Left controls group -->
+                    <control type="grouplist" id="9000">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>800</width>
+                        <height>80</height>
+                        <orientation>horizontal</orientation>
+                        <itemgap>20</itemgap>
+                        <usecontrolcoords>false</usecontrolcoords>
+                        
+                        <!-- Stop button -->
+                        <control type="button" id="15">
+                            <width>60</width>
+                            <height>60</height>
+                            <texturefocus colordiffuse="white">buttons/stop_focus.png</texturefocus>
+                            <texturenofocus colordiffuse="main_fg_70">buttons/stop.png</texturenofocus>
+                            <onclick>PlayerControl(Stop)</onclick>
+                            <visible>!Skin.HasSetting(HideStopButton)</visible>
+                            <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
+                            <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
+                        </control>
+                        
+                        <!-- Previous/Rewind button -->
+                        <control type="button" id="16">
+                            <width>60</width>
+                            <height>60</height>
+                            <texturefocus colordiffuse="white">buttons/rewind_focus.png</texturefocus>
+                            <texturenofocus colordiffuse="main_fg_70">buttons/rewind.png</texturenofocus>
+                            <onclick>PlayerControl(Rewind)</onclick>
+                            <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
+                            <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
+                        </control>
+                        
+                        <!-- Next/FastForward button -->
+                        <control type="button" id="17">
+                            <width>60</width>
+                            <height>60</height>
+                            <texturefocus colordiffuse="white">buttons/fastforward_focus.png</texturefocus>
+                            <texturenofocus colordiffuse="main_fg_70">buttons/fastforward.png</texturenofocus>
+                            <onclick>PlayerControl(Forward)</onclick>
+                            <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
+                            <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
+                        </control>
+                    </control>
+                    
+                    <!-- Right controls group -->
+                    <control type="grouplist" id="9001">
+                        <right>0</right>
+                        <top>0</top>
+                        <width>600</width>
+                        <height>80</height>
+                        <orientation>horizontal</orientation>
+                        <itemgap>20</itemgap>
+                        <usecontrolcoords>false</usecontrolcoords>
+                        
+                        <!-- Subtitles button -->
+                        <control type="button" id="18">
+                            <width>60</width>
+                            <height>60</height>
+                            <texturefocus colordiffuse="white">buttons/subtitles_focus.png</texturefocus>
+                            <texturenofocus colordiffuse="main_fg_70">buttons/subtitles.png</texturenofocus>
+                            <onclick>ActivateWindow(DialogSubtitles)</onclick>
+                            <visible>VideoPlayer.HasSubtitles</visible>
+                            <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
+                            <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
+                        </control>
+                        
+                        <!-- Audio tracks button -->
+                        <control type="button" id="19">
+                            <width>60</width>
+                            <height>60</height>
+                            <texturefocus colordiffuse="white">buttons/audio_focus.png</texturefocus>
+                            <texturenofocus colordiffuse="main_fg_70">buttons/audio.png</texturenofocus>
+                            <onclick>ActivateWindow(DialogAudioDSPManager)</onclick>
+                            <visible>VideoPlayer.HasAudioStreams</visible>
+                            <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
+                            <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
+                        </control>
+                        
+                        <!-- Settings/Info button -->
+                        <control type="button" id="20">
+                            <width>60</width>
+                            <height>60</height>
+                            <texturefocus colordiffuse="white">buttons/info_focus.png</texturefocus>
+                            <texturenofocus colordiffuse="main_fg_70">buttons/info.png</texturenofocus>
+                            <onclick>ActivateWindow(DialogVideoInfo)</onclick>
+                            <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
+                            <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
+                        </control>
+                        
+                        <!-- Volume control -->
+                        <control type="button" id="21">
+                            <width>60</width>
+                            <height>60</height>
+                            <texturefocus colordiffuse="white">buttons/volume_focus.png</texturefocus>
+                            <texturenofocus colordiffuse="main_fg_70">buttons/volume.png</texturenofocus>
+                            <onclick>ActivateWindow(DialogVolumeBar)</onclick>
+                            <animation effect="zoom" start="100" end="110" time="100">Focus</animation>
+                            <animation effect="zoom" start="110" end="100" time="100">UnFocus</animation>
+                        </control>
+                    </control>
+                </control>
+
+                <!-- Chapter/bookmark navigation (if available) -->
+                <control type="group">
+                    <left>80</left>
+                    <bottom>20</bottom>
+                    <width>1760</width>
+                    <height>40</height>
+                    <visible>VideoPlayer.HasChapters</visible>
+                    
+                    <control type="label">
+                        <left>0</left>
+                        <top>0</top>
+                        <width>200</width>
+                        <height>40</height>
+                        <font>font12</font>
+                        <textcolor>main_fg_70</textcolor>
+                        <label>$LOCALIZE[21396]: $INFO[VideoPlayer.Chapter]/$INFO[VideoPlayer.ChapterCount]</label>
+                        <aligny>center</aligny>
+                    </control>
+                    
+                    <control type="button" id="22">
+                        <left>220</left>
+                        <top>5</top>
+                        <width>30</width>
+                        <height>30</height>
+                        <texturefocus colordiffuse="white">buttons/chapter_prev_focus.png</texturefocus>
+                        <texturenofocus colordiffuse="main_fg_70">buttons/chapter_prev.png</texturenofocus>
+                        <onclick>PlayerControl(ChapterOrBigStepBack)</onclick>
+                    </control>
+                    
+                    <control type="button" id="23">
+                        <left>260</left>
+                        <top>5</top>
+                        <width>30</width>
+                        <height>30</height>
+                        <texturefocus colordiffuse="white">buttons/chapter_next_focus.png</texturefocus>
+                        <texturenofocus colordiffuse="main_fg_70">buttons/chapter_next.png</texturenofocus>
+                        <onclick>PlayerControl(ChapterOrBigStepForward)</onclick>
+                    </control>
+                </control>
+                
+                <!-- Navigation logic -->
+                <onup condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">SetProperty(OSDInfo,1,Home)</onup>
+                <onup condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar)">ClearProperty(OSDInfo,Home)</onup>
+                <onup condition="!VideoPlayer.Content(LiveTV) + Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">6501</onup>
+                <ondown condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo))">$VAR[Action_OSD_Main_OnDown]</ondown>
+                <ondown condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo))">ClearProperty(OSDInfo,Home)</ondown>
+                <onup condition="VideoPlayer.Content(LiveTV)">Close</onup>
+                <onup condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</onup>
+                <ondown condition="VideoPlayer.Content(LiveTV)">Close</ondown>
+                <ondown condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</ondown>
+            </control>
+
+            <!-- Subtitles Stream Selector -->
+            <include content="OSD_Stream_Selector" condition="!Skin.HasSetting(OSD.DisablePopUpDialogs)">
+                <param name="id">6207</param>
+                <param name="buttonid">18</param>
+                <param name="stream_type">subtitle</param>
+                <param name="header">$LOCALIZE[287]</param>
+                <param name="nibpos">180</param>
+                <param name="width">640</param>
+                <param name="method">set_player_subtitle</param>
+                <param name="enabled">VideoPlayer.SubtitlesEnabled</param>
+                <param name="toggle">true</param>
+                <param name="icon">special://skin/extras/icons/quote.png</param>
+            </include>
+
+            <!-- Audio Stream Selector -->
+            <include content="OSD_Stream_Selector" condition="!Skin.HasSetting(OSD.DisablePopUpDialogs)">
+                <param name="id">6206</param>
+                <param name="buttonid">10018</param>
+                <param name="stream_type">audio</param>
+                <param name="header">$LOCALIZE[460]</param>
+                <param name="nibpos">240</param>
+                <param name="width">640</param>
+                <param name="method">set_player_audio</para
