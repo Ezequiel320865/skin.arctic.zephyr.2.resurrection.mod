@@ -1,142 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Foundation -->
-<window id="2901">
-    <onload condition="!Player.PauseEnabled">SetFocus(15)</onload>
-    <onload condition="Player.PauseEnabled + !Skin.HasSetting(HidePlayPauseButton)">SetFocus(14)</onload>
-    <onload condition="Player.PauseEnabled + [Skin.HasSetting(HidePlayPauseButton) + !Skin.HasSetting(HideStopButton)]">SetFocus(15)</onload>
-    <onload condition="Player.PauseEnabled + [Skin.HasSetting(HidePlayPauseButton) + Skin.HasSetting(HideStopButton)]">SetFocus(18)</onload>
-    <onunload>ClearProperty(OSDInfo,Home)</onunload>
-    <onunload>CancelAlarm(osd_timeout,true)</onunload>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BINGIE -->
+<window>
+    <zorder>2</zorder>
+    <onload>SetFocus(200)</onload>
+	<onload condition="!VideoPlayer.Content(livetv) + ![Skin.String(defaultosdbutton_video,203) + !Player.PauseEnabled] + ![[Skin.String(defaultosdbutton_video,202) | Skin.String(defaultosdbutton_video,203)] + !Player.SeekEnabled]">SetFocus($INFO[Skin.String(defaultosdbutton_video)])</onload>
+    <onload condition="VideoPlayer.Content(livetv) + ![Skin.String(defaultosdbutton_livetv,203) + !Player.PauseEnabled] + ![[Skin.String(defaultosdbutton_livetv,202) | Skin.String(defaultosdbutton_livetv,203)] + !Player.SeekEnabled]">SetFocus($INFO[Skin.String(defaultosdbutton_livetv)])</onload>
+    <onload condition="Skin.HasSetting(UseBingieOSD) + !VideoPlayer.Content(livetv) + !Player.PauseEnabled">SetFocus(300)</onload>
+    <onload condition="!Player.Paused + !VideoPlayer.Content(livetv) + Skin.HasSetting(EnableAutoPauseOnOSD) + !Skin.HasSetting(EnableOSDInfo)">Pause</onload>
+    <onload condition="Skin.HasSetting(OSDShowInfoOnPause) + !Skin.HasSetting(EnableOSDInfo)">Skin.ToggleSetting(EnableOSDInfo)</onload>
+	<onload>ClearProperty(DialogMPAATopBar,home)</onload>
+	<onload>ClearProperty(DisableOSDCast,Home)</onload>
+	<onload>CancelAlarm(OpenMPAATopBar,silent)</onload>
+	<onunload>AlarmClock(OpenMPAATopBar,SetProperty(DialogMPAATopBar,1,home),00:00,silent)</onunload>
     <controls>
-
-        <control type="button" id="99220">
-            <include>Defs_Hidden_Button</include>
-            <onfocus>SetFocus(15)</onfocus>
-            <onfocus condition="Window.IsVisible(videoosd)">Action(Close)</onfocus>
-        </control>
-
-        <control type="button">
-            <description>background close area</description>
-            <left>0</left>
-            <top>0</top>
-            <width>100%</width>
-            <bottom>200</bottom>
-            <texturefocus />
-            <texturenofocus />
-            <onclick>Action(close)</onclick>
-        </control>
-
+		
+        <!--OSD Panel-->
         <control type="group">
-            <visible>!Window.IsVisible(DialogPlayerProcessInfo.xml)</visible>
-            <visible>!Window.IsVisible(1142) + !Window.IsVisible(1143)</visible>
-            <control type="group">
-                <visible>!Window.IsVisible(DialogSlider.xml)</visible>
-                <visible>!Window.IsVisible(VideoOSDBookmarks.xml)</visible>
-                <animation effect="fade" start="100" end="0" time="200" condition="Control.HasFocus(9605)">Conditional</animation>
-                
-                <!-- Barra de progreso con botón de play/pause integrado -->
-                <control type="group">
-                    <left>50</left>
-                    <bottom>150</bottom>
-                    <width>1800</width>
-                    <height>80</height>
-                    
-                    <!-- Botón de play/pause integrado en la barra -->
-                    <control type="button" id="14">
-                        <left>0</left>
-                        <top>0</top>
-                        <width>80</width>
-                        <height>80</height>
-                        <include>OSD_Button_PlayPause</include>
-                        <visible>!Skin.HasSetting(HidePlayPauseButton)</visible>
-                    </control>
-                    
-                    <!-- Barra de progreso -->
-                    <control type="progress">
-                        <left>90</left>
-                        <width>1610</width>
-                        <height>8</height>
-                        <top>36</top>
-                        <info>Player.Progress</info>
-                        <texturebg colordiffuse="main_fg_30">common/white.png</texturebg>
-                        <righttexture colordiffuse="Highlight">common/white.png</righttexture>
-                        <lefttexture />
-                        <midtexture />
-                        <visible>!PVR.IsPlayingTV</visible>
-                    </control>
-                    
-                    <!-- Slider de búsqueda -->
-                    <control type="slider" id="6502">
-                        <left>90</left>
-                        <width>1610</width>
-                        <height>32</height>
-                        <top>25</top>
-                        <info>Player.Progress</info>
-                        <action>seek</action>
-                        <texturesliderbar />
-                        <textureslidernib />
-                        <textureslidernibfocus />
-                    </control>
-                </control>
-
-                <!-- Controles secundarios debajo de la barra -->
-                <control type="group">
-                    <left>140</left>
-                    <top>600</top>
-                    <width>1600</width>
-                    <height>80</height>
-                    
-                    <control type="grouplist" id="9000">
-                        <left>0</left>
-                        <top>0</top>
-                        <width>1600</width>
-                        <height>80</height>
-                        
-                        <include condition="!VideoPlayer.Content(musicvideos) + !VideoPlayer.Content(LiveTV)">OSD_VideoPosition</include>
-                        <include condition="VideoPlayer.Content(musicvideos) + !VideoPlayer.Content(LiveTV)">OSD_MusicPosition</include>
-                        <include condition="VideoPlayer.Content(LiveTV)">OSD_LiveTVPosition</include>
-                        <itemgap>20</itemgap>
-
-                        <onup condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">SetProperty(OSDInfo,1,Home)</onup>
-                        <onup condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo)) + !Skin.HasSetting(PlayerScrollSeekbar)">ClearProperty(OSDInfo,Home)</onup>
-                        <onup condition="!VideoPlayer.Content(LiveTV) + Skin.HasSetting(PlayerScrollSeekbar) + [[!Skin.HasSetting(OSD.DisablePopUpDialogs) + ![Control.HasFocus(18) | Control.HasFocus(10018) | Control.HasFocus(41)]] | Skin.HasSetting(OSD.DisablePopUpDialogs)]">6501</onup>
-                        <onup condition="!VideoPlayer.Content(LiveTV) + !Skin.HasSetting(OSD.DisablePopUpDialogs) + Control.HasFocus(18)">SetFocus(6207)</onup>
-                        <onup condition="!VideoPlayer.Content(LiveTV) + !Skin.HasSetting(OSD.DisablePopUpDialogs) + Control.HasFocus(10018)">SetFocus(6206)</onup>
-                        <onup condition="!VideoPlayer.Content(LiveTV) + !Skin.HasSetting(OSD.DisablePopUpDialogs) + Control.HasFocus(41)">SetFocus(7800)</onup>
-                        <ondown condition="!VideoPlayer.Content(LiveTV) + String.IsEmpty(Window(Home).Property(OSDInfo))">$VAR[Action_OSD_Main_OnDown]</ondown>
-                        <ondown condition="!VideoPlayer.Content(LiveTV) + !String.IsEmpty(Window(Home).Property(OSDInfo))">ClearProperty(OSDInfo,Home)</ondown>
-
-                        <onup condition="VideoPlayer.Content(LiveTV)">Close</onup>
-                        <onup condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</onup>
-                        <ondown condition="VideoPlayer.Content(LiveTV)">Close</ondown>
-                        <ondown condition="VideoPlayer.Content(LiveTV)">ActivateWindow(1139)</ondown>
-
-                        <orientation>horizontal</orientation>
-                        <usecontrolcoords>false</usecontrolcoords>
-                        <include condition="!VideoPlayer.Content(LiveTV)">OSD_Controls_NoPlay</include>
-                        <include condition="VideoPlayer.Content(LiveTV)">OSD_Controls_LiveTV_NoPlay</include>
-                    </control>
-                </control>
-            </control>
-
-            <!-- [El resto del código permanece igual] -->
-            <!-- Subtitles -->
-            <include content="OSD_Stream_Selector" condition="!Skin.HasSetting(OSD.DisablePopUpDialogs)">
-                <param name="id">6207</param>
-                <param name="buttonid">18</param>
-                <param name="stream_type">subtitle</param>
-                <param name="header">$LOCALIZE[287]</param>
-                <param name="nibpos">180</param>
-                <param name="width">640</param>
-                <param name="method">set_player_subtitle</param>
-                <param name="enabled">VideoPlayer.SubtitlesEnabled</param>
-                <param name="toggle">true</param>
-                <param name="icon">special://skin/extras/icons/quote.png</param>
-            </include>
-            
-            <!-- [El resto del código permanece igual] -->
-            
-        </control>
-
+            <include>OSDButtonsModern</include>
+            <include>HideOsdConditions</include>
+		</control>
     </controls>
 </window>
